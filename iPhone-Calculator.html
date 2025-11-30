@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iPhone Upgrade Calculator</title>
+  <style>
+    :root {
+      --bg: #e8ecf3;
+      --card: #ffffff;
+      --text: #1c1c1e;
+      --subtext: #2c2c2e;
+      --bar-bg: #d1d1d6;
+      --bar-fill: #007aff;
+    }
+
+    body.dark-mode {
+      --bg: #121212;
+      --card: #1e1e1e;
+      --text: #f5f5f5;
+      --subtext: #e0e0e0;
+      --bar-bg: #333333;
+      --bar-fill: #0a84ff;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      padding: 40px;
+      display: flex;
+      justify-content: center;
+      transition: background 0.3s ease, color 0.3s ease;
+      color: var(--text);
+    }
+
+    .container {
+      background: var(--card);
+      padding: 35px;
+      border-radius: 24px;
+      max-width: 520px;
+      width: 100%;
+      box-shadow: 0 10px 35px rgba(0,0,0,0.12);
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    label {
+      font-weight: 700;
+      display: block;
+      margin-top: 20px;
+      color: var(--subtext);
+    }
+
+    select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      margin-top: 6px;
+      background: #f2f2f7;
+      font-size: 15px;
+      color: var(--text);
+      transition: background 0.3s ease, color 0.3s ease, border 0.3s ease;
+    }
+
+    body.dark-mode select {
+      background: #2a2a2a;
+      color: #f5f5f5;
+      border: 1px solid #555;
+    }
+
+    body.dark-mode select option {
+      background: #2a2a2a;
+      color: #f5f5f5;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 30px;
+      padding: 15px;
+      border: none;
+      background: #007aff;
+      color: white;
+      border-radius: 14px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.25s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    button:hover {
+      background: #0064d6;
+    }
+
+    #result {
+      margin-top: 15px;
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      color: var(--text);
+    }
+
+    .progress-bar {
+      width: 100%;
+      background: var(--bar-bg);
+      height: 10px;
+      border-radius: 10px;
+      margin-top: 20px;
+      overflow: hidden;
+    }
+
+    .progress {
+      height: 10px;
+      width: 0%;
+      background: var(--bar-fill);
+      border-radius: 10px;
+      transition: width 0.3s ease, background 0.3s ease;
+    }
+
+    .dark-toggle {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 20px;
+      height: 60px;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 160px;
+      height: 34px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      border-radius: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: #1c1c1e;
+      font-size: 16px;
+      padding: 0 10px;
+      box-sizing: border-box;
+      transition: background 0.5s ease;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      border-radius: 50%;
+      z-index: 1;
+      transition: transform 0.5s cubic-bezier(0.68, -0.6, 0.32, 1.6), background 0.5s ease;
+    }
+
+    input:checked + .slider {
+      background-color: #d4b500;
+      color: black;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(126px);
+      background-color: black;
+      animation: bounce-on 0.5s;
+    }
+
+    input:not(:checked) + .slider:before {
+      transform: translateX(0);
+      animation: bounce-off 0.5s;
+    }
+
+    .slider span {
+      display: inline-block;
+      transition: transform 0.5s ease;
+    }
+
+    input:checked + .slider span {
+      animation: text-bounce-on 0.5s;
+    }
+
+    input:not(:checked) + .slider span {
+      animation: text-bounce-off 0.5s;
+    }
+
+    @keyframes bounce-on {
+      0% { transform: translateX(0); }
+      50% { transform: translateX(130px); }
+      70% { transform: translateX(120px); }
+      100% { transform: translateX(126px); }
+    }
+
+    @keyframes bounce-off {
+      0% { transform: translateX(126px); }
+      50% { transform: translateX(-6px); }
+      70% { transform: translateX(10px); }
+      100% { transform: translateX(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="dark-toggle">
+      <label class="switch">
+        <input type="checkbox" onchange="toggleDark()">
+        <span class="slider">Dark Mode</span>
+      </label>
+    </div>
+
+    <h1>iPhone Upgrade Calculator</h1>
+
+    <div class="progress-bar"><div class="progress" id="progress"></div></div>
+
+    <label>How old is your current iPhone?</label>
+    <select class="q" id="age">
+      <option value="" selected disabled>Select an option</option>
+      <option value="0">Less than 1 year</option>
+      <option value="1">1–2 years</option>
+      <option value="2">3–4 years</option>
+      <option value="3">5+ years</option>
+    </select>
+
+    <label>Battery health percentage of your iPhone?</label>
+    <select class="q" id="battery">
+      <option value="" selected disabled>Select an option</option>
+      <option value="0">95%+</option>
+      <option value="1">90–94%</option>
+      <option value="2">80–89%</option>
+      <option value="3">Below 80%</option>
+    </select>
+
+    <label>Is your iPhone slow or laggy?</label>
+    <select class="q" id="speed">
+      <option value="" selected disabled>Select an option</option>
+      <option value="0">No</option>
+      <option value="2">A little</option>
+      <option value="3">Yes, often</option>
+    </select>
+
+    <label>Do you care about iPhone camera upgrades?</label>
+    <select class="q" id="camera">
+      <option value="" selected disabled>Select an option</option>
+      <option value="0">Not at all</option>
+      <option value="1">Somewhat</option>
+      <option value="2">A lot</option>
+    </select>
+
+    <label>Are you running out of iPhone storage frequently?</label>
+    <select class="q" id="storage">
+      <option value="" selected disabled>Select an option</option>
+      <option value="0">Plenty of space</option>
+      <option value="1">Sometimes almost full</option>
+      <option value="2">Always full</option>
+    </select>
+
+    <label>Is your iPhone screen damaged?</label>
+    <select class="q" id="screen">
+      <option value="" selected disabled>Select an option</option>
+      <option value="0">No</option>
+      <option value="1">Minor scratches</option>
+      <option value="3">Cracked / bad</option>
+    </select>
+
+    <label>Is the back of your iPhone damaged?</label>
+    <select class="q" id="back">
+      <option value="" selected disabled>Select an option></option>
+      <option value="0">No</option>
+      <option value="1">Minor scratches</option>
+      <option value="3">Cracked / bad</option>
+    </select>
+
+    <label>Do you play demanding games on your iPhone frequently?</label>
+    <select class="q" id="demanding-games">
+      <option value="" selected disabled>Select an option</option>
+      <option value="0">Rarely</option>
+      <option value="1">Sometimes</option>
+      <option value="2">Often</option>
+    </select>
+
+    <label>Do you edit photos or videos on your iPhone?</label>
+    <select class="q" id="edit">
+      <option value="" selected disabled>Select an option</option>
+      <option value="0">Rarely</option>
+      <option value="1">Sometimes</option>
+      <option value="2">Often</option>
+    </select>
+
+    <label>Do you care about new iPhone features (USB-C, 120Hz, better battery, etc.)?</label>
+    <select class="q" id="features">
+      <option value="" selected disabled>Select an option</option>
+      <option value="0">Not really</option>
+      <option value="1">Somewhat</option>
+      <option value="2">Yes</option>
+    </select>
+
+    <button onclick="calculate()">Should You Upgrade?</button>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function toggleDark() {
+      document.body.classList.toggle('dark-mode');
+    }
+
+    const questions = document.querySelectorAll('.q');
+    questions.forEach(q => q.addEventListener('change', updateProgress));
+
+    function updateProgress() {
+      const total = questions.length;
+      let filled = 0;
+      questions.forEach(q => { if (q.value !== "") filled++; });
+      const percent = (filled / total) * 100;
+      document.getElementById('progress').style.width = percent + '%';
+    }
+
+    function calculate() {
+      let score = 0;
+
+      const weights = {
+        age: 3,
+        battery: 4,
+        speed: 4,
+        camera: 2,
+        storage: 3,
+        screen: 4,
+        back: 3,
+        'demanding-games': 2,
+        edit: 2,
+        features: 1
+      };
+
+      questions.forEach(q => {
+        if (q.value !== "") {
+          score += parseInt(q.value) * (weights[q.id] || 1);
+        }
+      });
+
+      let result = "";
+      if (score >= 25) result = "YES — You should upgrade.";
+      else if (score >= 12) result = "MAYBE — Consider upgrading.";
+      else result = "NO — Your iPhone is fine.";
+
+      document.getElementById('result').innerText = result;
+    }
+  </script>
+</body>
+</html>
